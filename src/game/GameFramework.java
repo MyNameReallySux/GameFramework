@@ -16,8 +16,11 @@ import util.physics.Matrix3x3f;
 import java.awt.*;
 
 /**
- * Created by Shorty on 8/4/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public abstract class GameFramework extends Canvas implements Runnable, Log {
     public static final String TITLE = "Game Title";
     public static final String VERSION = "0.0.0.00";
@@ -29,9 +32,10 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
     protected volatile boolean running;
     protected volatile boolean resizing;
 
+    protected static GameFramework game;
+
     protected Clock clock;
     protected FrameRate frameRate;
-    protected GameFramework game;
     protected Thread gameThread;
     protected Display display;
     protected Screen screen;
@@ -44,9 +48,9 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
      */
     public GameFramework(){
         super();
-        this.game = this;
+        game = this;
         this.display = new Display(game);
-        this.screen = new Screen(game, 16f, 12f);
+        this.screen = new Screen(game, 4f, 3f);
         this.window = new GameWindow(game);
         this.gameThread = new Thread(game);
         this.modules = new ModuleList();
@@ -107,6 +111,23 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
     public GameWindow getWindow(){
         return window;
     }
+
+    public static Clock Clock(){
+        return game.getClock();
+    }
+    public static Screen Screen(){
+        return  game.getScreen();
+    }
+    public static Matrix3x3f Viewport(){
+        return  game.getScreen().getViewport();
+    }
+    public static Display Display(){
+        return  game.getDisplay();
+    }
+    public static GameWindow Window(){
+        return game.getWindow();
+    }
+
     public boolean isRunning(){
         return running;
     }

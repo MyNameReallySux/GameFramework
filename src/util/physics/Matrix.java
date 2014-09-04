@@ -5,8 +5,11 @@ import util.Log;
 import java.util.Random;
 
 /**
- * Created by Shorty on 8/22/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/17/2014.
+ * Copyright 2014©
  */
+
 public class Matrix implements Log {
     private final String LOG = "Matrix";
 
@@ -178,7 +181,12 @@ public class Matrix implements Log {
         if(params.length != size) throw new MatrixMathException("Parameters must be equal to 1 less than the size of the Matrix");
         for(int i = size - 1; i < size; i++){
             for(int j = 0; j < size; j++){
-                matrix.cells[i][j] = params[j];
+                /**
+                 * Java 7 Code
+                 matrix.cells[i][j] = params[j];
+                 */
+
+                System.arraycopy(params, 0, matrix.cells[i], 0, size);
             }
         }
         return matrix;
@@ -260,7 +268,6 @@ public class Matrix implements Log {
         return true;
     }
 
-    /*
     public Matrix add(Matrix b, boolean debug) throws MatrixMathException {
         StringBuilder results = new StringBuilder();
         StringBuilder operation = new StringBuilder();
@@ -283,10 +290,13 @@ public class Matrix implements Log {
                 results.append("C[").append(i).append("][").append(j).append("] = ").append(result.cells[i][j]).append("\n");
             }
         }
-        log(operation.toString());
-        log(results.toString());
+        if(debug){
+            log(operation.toString());
+            log(results.toString());
+        }
         return result;
     }
+
     public Matrix mul(Matrix b, boolean debug) throws MatrixMathException {
         Matrix a = this;
         if(!a.isCrossSize(b)) throw new MatrixMathException("Matrices must be cross sized to be multiplied.");
@@ -302,7 +312,6 @@ public class Matrix implements Log {
                 cellResult.append("C[").append(i).append("][").append(j).append("] = ");
                 for(int k = 0; k < b.rows; k++) {
                     float cellA, cellB;
-
                     cellA = a.cells[i][k];
                     cellB = b.cells[k][j];
                     result.cells[i][j] += (cellA * cellB);
@@ -322,10 +331,12 @@ public class Matrix implements Log {
 
         }
         results.append("\n");
-        log(operation.toString());
-        log(results.toString());
 
+        if(debug){
+            log(operation.toString());
+            log(results.toString());
+        }
         return result;
     }
-    */
+
 }

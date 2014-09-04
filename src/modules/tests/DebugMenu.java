@@ -6,14 +6,15 @@ import util.Log;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 /**
- * Created by Shorty on 8/17/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/17/2014.
+ * Copyright 2014©
  */
+
 public class DebugMenu extends JMenuBar implements Log {
     public static final String LOG = "DebugMenu";
 
@@ -70,12 +71,16 @@ public class DebugMenu extends JMenuBar implements Log {
         for(int i = 0; i < resList.size(); i++){
             final DisplayMode mode = modeList.get(i);
             final JMenuItem item = resList.get(i);
+            /**
+             * Java 7 Code
             item.addActionListener(new ActionListener() {
-                @Override
+            @Override
                 public void actionPerformed(ActionEvent e) {
-                    game.getDisplay().changeResolution(mode);
+                game.getDisplay().changeResolution(mode);
                 }
             });
+             */
+            item.addActionListener(e -> game.getDisplay().changeResolution(mode));
             resolution.add(item);
         }
     }

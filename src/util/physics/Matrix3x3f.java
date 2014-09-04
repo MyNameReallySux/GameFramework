@@ -1,8 +1,11 @@
 package util.physics;
 
 /**
- * Created by Shorty on 8/22/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/17/2014.
+ * Copyright 2014©
  */
+
 public class Matrix3x3f extends Matrix {
     private final String LOG = "Matrix3x3";
 
@@ -64,6 +67,14 @@ public class Matrix3x3f extends Matrix {
         });
     }
 
+    public static Matrix3x3f scale(float size){
+        return new Matrix3x3f(new float[][]{
+                {size, 0.0f, 0.0f},
+                {0.0f, size, 0.0f},
+                {0.0f,0.0f , 1.0f}
+        });
+    }
+
     public static Matrix3x3f scale(float x, float y){
         return new Matrix3x3f(new float[][]{
                 {x   , 0.0f, 0.0f},
@@ -82,13 +93,17 @@ public class Matrix3x3f extends Matrix {
 
     public static Matrix3x3f rotate(float rad){
         return new Matrix3x3f(new float[][]{
-                {(float) Math.cos(rad), (float)Math.sin(rad) , 0.0f},
-                {(float)-Math.sin(rad), (float)Math.cos(rad) , 0.0f},
+                {(float) Math.cos(rad), (float) Math.sin(rad) , 0.0f},
+                {(float)-Math.sin(rad), (float) Math.cos(rad) , 0.0f},
                 {0.0f                 ,0.0f                  , 1.0f}
         });
     }
 
-    /*
+    public Vector2f toVector() {
+        return mul(new Vector2f());
+    }
+
+
     public Matrix3x3f mul(Matrix b, boolean debug) throws MatrixMathException {
         Matrix3x3f a = this;
         Matrix3x3f result = new Matrix3x3f();
@@ -123,10 +138,12 @@ public class Matrix3x3f extends Matrix {
 
         }
         results.append("\n");
-        log(operation.toString());
-        log(results.toString());
 
+        if(debug){
+            log(operation.toString());
+            log(results.toString());
+        }
         return result;
     }
-    */
+
 }

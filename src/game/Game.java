@@ -1,18 +1,19 @@
 package game;
 
-import input.mouse.AbsoluteMouseInput;
 import input.keyboard.KeyboardInput;
-import modules.DebuggingModule;
-import modules.MatrixTransformationTest;
-import modules.tests.*;
+import input.mouse.AbsoluteMouseInput;
+import modules.tests.CannonTest;
 import util.ShutDownListener;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
- * Created by Shorty on 8/4/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public class Game extends GameFramework {
     public static final String TITLE = "Moon Wizard";
     public static final String VERSION = "0.0.0.01";
@@ -35,13 +36,15 @@ public class Game extends GameFramework {
         //addMod(new DrawingTest(this));
         //addMod(new MatrixTransformationTest(this));
         //addMod(new DeltaTest(this));
-        addMod(new ScreenMappingTest(this));
+        //addMod(new ScreenMappingTest(this));
+        addMod(new CannonTest(this));
     }
 
     @Override
     protected void initialize(){
         log(TITLE + " Version " + VERSION);
         super.initialize();
+        screen.setWorldSize(2f, 2f);
     }
 
     @Override

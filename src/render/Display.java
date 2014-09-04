@@ -8,8 +8,11 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * Created by Shorty on 8/20/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public class Display implements Log {
     private static final DisplayMode[] DISPLAY_MODES = new DisplayMode[]{
             new DisplayMode(640, 480, 32, DisplayMode.REFRESH_RATE_UNKNOWN),
@@ -72,6 +75,7 @@ public class Display implements Log {
         for(DisplayMode mode : graphicsDevice.getDisplayModes()){
             for(DisplayMode mode2 : DISPLAY_MODES){
                 DisplayModeWrapper supported = new DisplayModeWrapper(mode2);
+                //noinspection EqualsBetweenInconvertibleTypes
                 if(supported.equals(mode)){
                     DisplayModeWrapper wrap = new DisplayModeWrapper(mode);
                     if(!list.contains(wrap)){
@@ -139,7 +143,6 @@ public class Display implements Log {
                 log(LOG, "Window is null");
             }
         }
-
     }
 
     public class DisplayModeWrapper {

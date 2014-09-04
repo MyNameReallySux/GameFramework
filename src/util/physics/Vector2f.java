@@ -1,8 +1,11 @@
 package util.physics;
 
 /**
- * Created by Shorty on 8/11/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/17/2014.
+ * Copyright 2014©
  */
+
 public class Vector2f {
     public float x, y, w;
 
@@ -31,6 +34,12 @@ public class Vector2f {
     public Vector2f mul(Matrix3x3f matrix){
         Matrix vector = toMatrix();
         Matrix result = vector.mul(matrix);
+        return Matrix.toVector(result);
+    }
+
+    public Vector2f mul(Matrix3x3f matrix, boolean debug){
+        Matrix vector = toMatrix();
+        Matrix result = vector.mul(matrix, debug);
         return Matrix.toVector(result);
     }
 
@@ -73,8 +82,6 @@ public class Vector2f {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("V[ \t ").append(x).append(" \t ").append(y).append(" \t ").append(w).append(" \t ]");
-        return sb.toString();
+        return "V[ \t " + x + " \t " + y + " \t " + w + " \t ]";
     }
 }

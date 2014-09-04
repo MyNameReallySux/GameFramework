@@ -10,8 +10,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Created by Shorty on 8/20/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public class GameWindow extends JFrame {
     protected GameFramework game;
     protected Display display;
@@ -68,7 +71,7 @@ public class GameWindow extends JFrame {
         onResizeListener = new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                game.getScreen().onResize(e);
+                game.getScreen().onResize();
             }
         };
         addComponentListener(onResizeListener);

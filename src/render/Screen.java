@@ -4,12 +4,14 @@ import game.GameFramework;
 import util.physics.Matrix3x3f;
 
 import java.awt.*;
-import java.awt.event.ComponentEvent;
 import java.awt.geom.Point2D;
 
 /**
- * Created by Shorty on 8/25/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public class Screen {
     public GameFramework game;
 
@@ -26,6 +28,11 @@ public class Screen {
         resetViewport();
     }
 
+    public void setWorldSize(float worldWidth, float worldHeight){
+        this.worldWidth = worldWidth;
+        this.worldHeight = worldHeight;
+    }
+
     public void resetViewport(){
         this.screenWidth = game.getWidth() - 1;
         this.screenHeight = game.getHeight() - 1;
@@ -40,7 +47,7 @@ public class Screen {
         return viewport;
     }
 
-    public void onResize(ComponentEvent e) {
+    public void onResize() {
         game.setResizing(true);
         Dimension size = game.getSize();
         int viewportWidth = size.width * 99 / 100;

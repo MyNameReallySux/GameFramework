@@ -1,8 +1,11 @@
 package render;
 
 /**
- * Created by Shorty on 8/20/2014.
+ * Game Framework
+ * Created by MyNameReallySux on 8/20/2014.
+ * Copyright 2014©
  */
+
 public class FullScreenNotSupportedException extends Exception {
     String msg = "Full Screen Mode is not supported, reverting to windowed mode.";
 
