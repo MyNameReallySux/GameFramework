@@ -38,7 +38,7 @@ public class Matrix3x3f extends Matrix {
     }
 
     public Vector2f mul(Vector2f vector){
-        Matrix matrix = vector.toMatrix();
+        Matrix matrix = vector.toRowMatrix();
         Matrix result = mul(matrix);
         return Matrix.toVector(result);
     }
@@ -101,6 +101,11 @@ public class Matrix3x3f extends Matrix {
 
     public Vector2f toVector() {
         return mul(new Vector2f());
+    }
+
+    public Vector2f toVector(boolean rowMajor) {
+        if(rowMajor) return mul(new Vector2f());
+        else         return new Vector2f().mul(this);
     }
 
 

@@ -24,7 +24,7 @@ public class DebuggingModule extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
 
     }
 

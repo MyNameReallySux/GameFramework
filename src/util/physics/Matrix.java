@@ -239,6 +239,8 @@ public class Matrix implements Log {
     public static Vector2f toVector(Matrix matrix) {
         if (matrix.getRows() == 1 && matrix.getColumns() == 3) {
             return new Vector2f(matrix.cells[0][0], matrix.cells[0][1], matrix.cells[0][2]);
+        } else if (matrix.getRows() == 3 && matrix.getColumns() == 1) {
+            return new Vector2f(matrix.cells[0][0], matrix.cells[1][0], matrix.cells[2][0]);
         } else {
             return new Vector2f();
         }

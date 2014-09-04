@@ -1,7 +1,5 @@
 package modules.tests;
 
-import drawing.DynamicPoint;
-import drawing.Polygon;
 import game.GameFramework;
 import modules.GameModule;
 import util.physics.Matrix3x3f;
@@ -18,8 +16,10 @@ import java.awt.event.KeyEvent;
  */
 
 public class CannonTest extends GameModule {
-    private Polygon cannon;
-    private DynamicPoint bullet;
+    private Vector2f[] cannon, cannonWorld;
+    private float cannonRot, cannonRotRate;
+    private Vector2f bullet, bulletWorld, bulletVelocity;
+
 
     public CannonTest(GameFramework game) {
         super(game, "CannonTest");
@@ -27,57 +27,98 @@ public class CannonTest extends GameModule {
 
     @Override
     public boolean initialize() {
-        this.cannon = new Polygon(new Vector2f[]{
+        cannon = new Vector2f[]{
                 new Vector2f(0f, 0.05f),
                 new Vector2f(0.75f, 0.05f),
                 new Vector2f(0.75f, -0.05f),
                 new Vector2f(0f, -0.05f)
-        }, new Vector2f(-1f, -1f), 45f, 90f);
+        };
 
-        cannon.setMovable(false);
+        cannonWorld = new Vector2f[cannon.length];
+        cannonRot = (float)Math.toRadians(45);
+        cannonRotRate = (float)Math.toRadians(30);
+        bulletVelocity = new Vector2f(0, 0);
+
+        Matrix3x3f scale = Matrix3x3f.scale(0.5f, 0.5f);
+        for(int i = 0; i < cannon.length; i++){
+            cannon[i] = cannon[i].mul(scale);
+        }
+
         return true;
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         if(game.getKeyboard().keyDown(KeyEvent.VK_LEFT)){
-            cannon.setRotation((float) (cannon.getRotation() + cannon.getRotationRate() * game.getClock().getDelta()));
+            cannonRot += cannonRotRate * delta;
         }
         if(game.getKeyboard().keyDown(KeyEvent.VK_RIGHT)){
-            cannon.setRotation((float)(cannon.getRotation() - cannon.getRotationRate() * game.getClock().getDelta()));
+            cannonRot -= cannonRotRate * delta;
         }
-        if(game.getKeyboard().keyDownOnce(KeyEvent.VK_SPACE)){
-            Matrix3x3f matrix = Matrix3x3f.rotate(cannon.getRotation());
-            matrix = matrix.mul(Matrix3x3f.translate(7f, 0f));
 
-            Vector2f velocity = new Vector2f().mul(matrix);
+        if(game.getKeyboard().keyDownOnce(KeyEvent.VK_SPACE)) {
+            Matrix3x3f matrix = Matrix3x3f.translate(5f, 0f);
+            matrix = matrix.mul(Matrix3x3f.rotate(cannonRot));
 
-            matrix = Matrix3x3f.translate(0.75f, 0f);
-            matrix = matrix.mul(Matrix3x3f.rotate(cannon.getRotation()));
-            matrix = matrix.mul(Matrix3x3f.translate(cannon.getPositionX(), cannon.getPositionY()));
-            matrix = matrix.mul(GameFramework.Screen().getViewport());
-            bullet = new DynamicPoint(new Vector2f().mul(matrix), velocity);
+            bulletVelocity = new Vector2f().mul(matrix);
+
+            matrix = Matrix3x3f.translate(0.375f, 0f);
+            matrix = matrix.mul(Matrix3x3f.rotate(cannonRot));
+            matrix = matrix.mul(Matrix3x3f.translate(-1.0f, -1.0f));
+            bullet = matrix.toVector(false);
         }
     }
 
     @Override
     public void update(double delta) {
-        if(cannon != null){
-            cannon.applyTransformations();
-            cannon.update(delta);
+        Matrix3x3f matrix = Matrix3x3f.identity();
+        matrix = matrix.mul(Matrix3x3f.rotate(cannonRot));
+        matrix = matrix.mul(Matrix3x3f.translate(-1.0f, -1.0f));
+
+        for(int i = 0; i < cannon.length; i++){
+            cannonWorld[i] = cannon[i].mul(matrix);
         }
+
         if(bullet != null){
-            bullet.applyTransformations();
-            bullet.update(delta);
+            bulletVelocity.y += -9.8 * delta;
+            bullet.x += bulletVelocity.x * delta;
+            bullet.y += bulletVelocity.y * delta;
+            bulletWorld = new Vector2f(bullet);
+            if(bullet.y < -2.5f){
+                bullet = null;
+            }
         }
     }
 
     @Override
     public void render(Graphics g) {
+        g.setColor(Color.YELLOW);
+        g.drawString("<- to Raise, -> to Lower", 20, 50);
+        g.drawString("Press Space to Fire Cannon", 20, 65);
+        String vel = String.format("Velocity (%.2f, %.2f)", bulletVelocity.x, bulletVelocity.y);
+        g.drawString(vel, 20, 80);
+
+
+
+        for(int i = 0; i < cannon.length; i++){
+            cannonWorld[i] = cannonWorld[i].mul(GameFramework.Screen().getViewport());
+        }
+
         g.setColor(Color.WHITE);
-        cannon.drawPolygon(g);
+        drawPolygon(g, cannonWorld);
         if(bullet != null){
-            bullet.drawBox(g, 5);
+            bulletWorld = bullet.mul(GameFramework.Screen().getViewport());
+            g.drawOval((int)bulletWorld.x - 5, (int)bulletWorld.y - 5, 10, 10);
+        }
+    }
+
+    public void drawPolygon(Graphics g, Vector2f[] world){
+        Vector2f P;
+        Vector2f S = world[world.length - 1];
+        for (Vector2f vector : world) {
+            P = vector;
+            g.drawLine((int) S.x, (int) S.y, (int) P.x, (int) P.y);
+            S = P;
         }
     }
 }

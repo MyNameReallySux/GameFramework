@@ -48,7 +48,7 @@ public class Game extends GameFramework {
     }
 
     @Override
-    protected void input() {
+    protected void input(double delta) {
         if (keyboard.keyDownOnce(KeyEvent.VK_F)){
             game.getDisplay().toggleFullScreen();
         }

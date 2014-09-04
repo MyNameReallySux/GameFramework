@@ -25,7 +25,6 @@ public class DynamicPoint extends Geometric {
     @Override
     public void update(double delta) {
         velocity.y += -9.8f * delta;
-        log(velocity.y + "");
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
         world[0] = new Vector2f(base[0]);

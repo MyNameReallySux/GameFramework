@@ -38,7 +38,7 @@ public class DrawingTest extends GameModule {
     }
 
     @Override
-    public void input(){
+    public void input(double delta){
         if(game.keyboard.keyDown(KeyEvent.VK_D))
             lines.clear();
         if(game.keyboard.keyDown(KeyEvent.VK_1))

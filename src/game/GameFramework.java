@@ -88,8 +88,8 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
     }
 
     public void gameLoop(double delta){
-        processModuleInput();
-        input();
+        processModuleInput(delta);
+        input(delta);
         processModuleUpdates(delta);
         update(delta);
         draw();
@@ -195,11 +195,11 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
         }
     }
 
-    protected void processModuleInput(){
+    protected void processModuleInput(double delta){
         keyboard.poll();
         mouse.poll();
         for(GameModule module: modules.values()){
-            if(module.isInitialized()) module.input();
+            if(module.isInitialized()) module.input(delta);
         }
     }
     protected void processModuleUpdates(double delta){
@@ -236,7 +236,7 @@ public abstract class GameFramework extends Canvas implements Runnable, Log {
         }
     }
 
-    protected abstract void input();
+    protected abstract void input(double delta);
     protected abstract void update(double delta);
     protected abstract void render(Graphics g);
 

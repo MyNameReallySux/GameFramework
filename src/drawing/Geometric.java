@@ -18,29 +18,31 @@ public abstract class Geometric implements Log {
     protected Vector2f position;
     protected Vector2f velocity;
     protected float rotation, rotationDelta;
-
-    protected boolean movable, gravity;
+    protected boolean movable, gravity, rotating;
 
     public Vector2f getPosition(){
         return position;
     }
-
     public float getPositionX() {
         return position.x;
     }
-
     public float getPositionY(){
         return position.y;
+    }
+
+    public void setPosition(float x, float y) {
+        this.position = new Vector2f(x, y);
+    }
+    public void setPosition(Vector2f position) {
+        this.position = position;
     }
 
     public Vector2f getVelocity(){
         return velocity;
     }
-
     public float getVelocityX(){
         return velocity.x;
     }
-
     public float getVelocityY(){
         return velocity.y;
     }
@@ -48,11 +50,13 @@ public abstract class Geometric implements Log {
     public void setVelocity(float x, float y){
         this.velocity = new Vector2f(x, y);
     }
+    public void setVelocity(Vector2f velocity) {
+        this.velocity = velocity;
+    }
 
     public Vector2f[] getBasePolygon(){
         return base;
     }
-
     public Vector2f getBasePolygon(int i){
         return base[i];
     }
@@ -60,7 +64,6 @@ public abstract class Geometric implements Log {
     public Vector2f[] getWorldPolygon(){
         return world;
     }
-
     public Vector2f getWorldPolygon(int i){
         return world[i];
     }
@@ -68,7 +71,6 @@ public abstract class Geometric implements Log {
     public float getRotation(){
         return rotation;
     }
-
     public float getRotationRate(){
         return rotationDelta;
     }
@@ -76,12 +78,10 @@ public abstract class Geometric implements Log {
     public void setRotation(float rotation){
         this.rotation = rotation;
     }
-
     public void setRotationRate(float rotationDelta){
         this.rotationDelta = rotationDelta;
     }
-
-    public void setRotationData(float rotation, float rotationDelta){
+    public void setRotation(float rotation, float rotationDelta){
         this.rotation = rotation;
         this.rotationDelta = rotationDelta;
     }
@@ -92,6 +92,10 @@ public abstract class Geometric implements Log {
     public void setAffectedByGravity(boolean gravity){
         this.gravity = gravity;
     }
+    public void setRotating(boolean rotating){
+        this.rotating = rotating;
+    }
+
 
     public abstract void update(double delta);
     public abstract void draw(Graphics g);

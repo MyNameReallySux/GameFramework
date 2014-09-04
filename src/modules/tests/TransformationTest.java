@@ -41,7 +41,7 @@ public class TransformationTest extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         if(game.keyboard.keyDownOnce(KeyEvent.VK_R))
             doRotate = !doRotate;
         if(game.keyboard.keyDownOnce(KeyEvent.VK_S))

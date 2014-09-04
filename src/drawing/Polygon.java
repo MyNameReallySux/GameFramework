@@ -32,6 +32,8 @@ public class Polygon extends Geometric implements Log {
         this.velocity = new Vector2f(0, 0);
         this.rotation = (float)Math.toRadians(rotation);
         this.rotationDelta = (float)Math.toRadians(rotationDelta);
+        this.movable = true;
+        this.gravity = true;
     }
 
     @Override
@@ -46,11 +48,14 @@ public class Polygon extends Geometric implements Log {
             }
             position.x += velocity.x * delta;
             position.y += velocity.y * delta;
+            log(position.toString());
             for(int i = 0; i < base.length; i++){
                 world[i] = new Vector2f(base[i]);
             }
         }
-
+        if(rotating){
+            rotation += rotationDelta * delta;
+        }
     }
 
     public void drawPolygon(Graphics g){

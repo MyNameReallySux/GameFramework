@@ -31,14 +31,25 @@ public class Vector2f {
         this.w = w;
     }
 
+    public Vector2f mul(Vector2f b){
+        Vector2f a = this;
+        Vector2f c = new Vector2f();
+
+        c.x = (a.y * b.w - a.w * b.y);
+        c.y = (a.w * b.x - a.x * b.w);
+        c.w = (a.x * b.y - a.y * b.x);
+
+        return c;
+    }
+
     public Vector2f mul(Matrix3x3f matrix){
-        Matrix vector = toMatrix();
+        Matrix vector = toRowMatrix();
         Matrix result = vector.mul(matrix);
         return Matrix.toVector(result);
     }
 
     public Vector2f mul(Matrix3x3f matrix, boolean debug){
-        Matrix vector = toMatrix();
+        Matrix vector = toRowMatrix();
         Matrix result = vector.mul(matrix, debug);
         return Matrix.toVector(result);
     }
@@ -69,13 +80,25 @@ public class Vector2f {
         x = temp;
     }
 
-    public Matrix toMatrix(){
+    public Matrix toRowMatrix(){
         Matrix matrix = new Matrix(1, 3);
         matrix.fill(x, y, w);
         return matrix;
     }
 
-    public static Matrix toMatrix(Vector2f vector){
+    public Matrix toColMatrix(){
+        Matrix matrix = new Matrix(3, 1);
+        matrix.fill(x, y, w);
+        return matrix;
+    }
+
+    public static Matrix toRowMatrix(Vector2f vector){
+        Matrix matrix = new Matrix(1, 3);
+        matrix.fill(vector.x, vector.y, vector.w);
+        return matrix;
+    }
+
+    public static Matrix toColMatrix(Vector2f vector){
         Matrix matrix = new Matrix(1, 3);
         matrix.fill(vector.x, vector.y, vector.w);
         return matrix;

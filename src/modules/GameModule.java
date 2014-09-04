@@ -40,7 +40,7 @@ public abstract class GameModule implements Log {
     }
 
     public abstract boolean initialize();
-    public abstract void input();
+    public abstract void input(double delta);
     public abstract void update(double delta);
     public abstract void render(Graphics g);
 }

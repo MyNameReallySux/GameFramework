@@ -25,7 +25,7 @@ public class RelativeMouseTest extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         if(game.keyboard.keyDownOnce(KeyEvent.VK_R)){
             if(game.mouse instanceof RelativeMouseInput) game.setMouseController(new AbsoluteMouseInput(game));
             else game.setMouseController(new RelativeMouseInput(game));

@@ -29,7 +29,7 @@ public class PolarCoordinateTest extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         coordinate = game.getMouse().getPosition();
     }
 

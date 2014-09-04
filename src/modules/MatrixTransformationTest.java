@@ -42,7 +42,7 @@ public class MatrixTransformationTest extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         if(game.getKeyboard().keyDownOnce(KeyEvent.VK_SPACE)){
             showStars = !showStars;
         }

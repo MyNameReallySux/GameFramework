@@ -25,7 +25,7 @@ public class DeltaTest extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
         if(game.getKeyboard().keyDownOnce(KeyEvent.VK_UP))      sleep += 10;
         if(game.getKeyboard().keyDownOnce(KeyEvent.VK_DOWN))    sleep -= 10;
         if(sleep > 1000)                                        sleep = 1000;

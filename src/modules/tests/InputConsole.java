@@ -24,7 +24,7 @@ public class InputConsole extends GameModule {
     }
 
     @Override
-    public void input() {
+    public void input(double delta) {
 
     }
 
