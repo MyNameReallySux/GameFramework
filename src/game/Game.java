@@ -1,12 +1,19 @@
 package game;
 
-import input.keyboard.KeyboardInput;
-import input.mouse.AbsoluteMouseInput;
-import modules.tests.CannonTest;
-import util.ShutDownListener;
+import input.keyboard.KeyboardController;
+import input.mouse.MouseController;
+import modules.DuplicateModuleException;
+import modules.GameModule;
+import modules.ModuleList;
+import render.Display;
+import render.GameWindow;
+import render.Screen;
+import util.Clock;
+import util.FrameRate;
+import util.Log;
+import util.physics.Matrix3x3f;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 /**
  * Game Framework
@@ -14,63 +21,235 @@ import java.awt.event.KeyEvent;
  * Copyright 2014©
  */
 
-public class Game extends GameFramework {
-    public static final String TITLE = "Moon Wizard";
-    public static final String VERSION = "0.0.0.01";
-    public static final String LOG = "Game";
+public abstract class Game extends Canvas implements Runnable, Log {
+    public static final String TITLE = "Game Title";
+    public static final String VERSION = "0.0.0.00";
+    public static final String LOG = "GameFramework";
+    public static final boolean DEBUG = true;
+    protected static Game game;
+    public volatile KeyboardController keyboard;
+    public volatile MouseController mouse;
+    protected ModuleList modules;
+    protected volatile boolean running;
+    protected volatile boolean resizing;
+    protected Clock clock;
+    protected FrameRate frameRate;
+    protected Thread gameThread;
+    protected Display display;
+    protected Screen screen;
+    protected GameWindow window;
 
-    @Override
-    public void addInputListeners(){
-        setKeyboardController(new KeyboardInput());
-        setMouseController(new AbsoluteMouseInput(this));
-        addKeyListener(new ShutDownListener(this));
+    /**
+     * Class Constructor
+     */
+    public Game(){
+        super();
+        game = this;
+        this.display = new Display(game);
+        this.screen = new Screen(game, 4f, 3f);
+        this.window = new GameWindow(game);
+        this.gameThread = new Thread(game);
+        this.modules = new ModuleList();
+        this.frameRate = new FrameRate();
+        this.clock = new Clock();
+        setIgnoreRepaint(true);
+        setBackground(Color.BLACK);
     }
 
-    @Override
-    public void addModules(){
-        //addMod(new TransformationTest(this));
-        //addMod(new InputConsole(this));
-        //addMod(new DebuggingModule(this));
-        //addMod(new RelativeMouseTest(this));
-        //addMod(new PolarCoordinateTest(this));
-        //addMod(new DrawingTest(this));
-        //addMod(new MatrixTransformationTest(this));
-        //addMod(new DeltaTest(this));
-        //addMod(new ScreenMappingTest(this));
-        addMod(new CannonTest(this));
+    public static Game game() {
+        return game;
     }
 
-    @Override
-    protected void initialize(){
-        log(TITLE + " Version " + VERSION);
-        super.initialize();
-        screen.setWorldSize(2f, 2f);
+    public static Clock clock(){
+        return game.clock;
     }
 
+    public static Screen screen(){
+        return  game.screen;
+    }
+
+    public static Matrix3x3f viewport(){
+        return  game.screen.getViewport();
+    }
+
+    public static Display display(){
+        return  game.display;
+    }
+
+    public static GameWindow window(){
+        return game.window;
+    }
+
+    public static KeyboardController keyboard() {
+        return game.keyboard;
+    }
+
+    public static MouseController mouse() {
+        return game.mouse;
+    }
+
+    /**
+     * This method initializes the {@link render.Display}, which is required
+     * to be initialized before the actual game components and
+     * modules are initialized. This can be called immediately
+     * after the GameFramework object is created if desired.
+     * <p/>
+     * This method calls the "run" method, by using the "start"
+     * method of {@link java.lang.Thread}
+     */
+    public void start(){
+        gameThread.start();
+    }
+
+    /**
+     * Main game loop. As long as the boolean value "running"
+     * is set to true,
+     */
     @Override
-    protected void input(double delta) {
-        if (keyboard.keyDownOnce(KeyEvent.VK_F)){
-            game.getDisplay().toggleFullScreen();
+    public void run(){
+        initialize();
+        while(running){
+            clock.clockTick();
+            gameLoop(clock.getDelta());
+            clock.setLastTime();
         }
     }
 
-    @Override
-    protected void update(double delta) {
-        window.setTitle(GameFramework.TITLE + " v:" + GameFramework.VERSION + " | " + frameRate.getFrameRate());
+    public void gameLoop(double delta){
+        processModuleInput(delta);
+        input(delta);
+        processModuleUpdates(delta);
+        update(delta);
+        draw();
+        sleep(clock.getSleep());
     }
 
-    @Override
-    protected void render(Graphics g) {
-        debugRender(g);
+    public boolean isRunning(){
+        return running;
+    }
+    public boolean isResizing(){
+        return resizing;
     }
 
-    private void debugRender(Graphics g){
-        frameRate.calculate();
-        g.setColor(Color.GREEN);
-        g.drawString(frameRate.getFrameRate(), 30, 30);
+    public void setResizing(boolean resizing) {
+        this.resizing = resizing;
+    }
 
-        g.setColor(Color.WHITE);
-        g.drawString("Press 'F' to toggle fullscreen mode", 30, getHeight() - 40);
-        g.drawString("Press 'ESC' to exit...", getWidth() - 150, getHeight() - 40);
+    public abstract void addInputListeners();
+    public abstract void addModules();
+
+    protected void initialize(){
+        log(LOG, "Initializing Game Loop");
+
+        addInputListeners();
+        addModules();
+
+        if(game.isRunning() && game.isVisible()){
+            for(GameModule module: modules.values()){
+                if(!module.isInitialized() && module.initialize())
+                    module.setInitialized(true);
+            }
+        }
+
+        frameRate.initialize();
+        clock.initialize();
+        running = true;
+    }
+
+    public void setKeyboardController(KeyboardController keyboard) {
+        removeKeyListener(this.keyboard);
+        addKeyListener(keyboard);
+        this.keyboard = keyboard;
+    }
+    public void setMouseController(MouseController mouse) {
+        removeMouseListener(this.mouse);
+        removeMouseMotionListener(this.mouse);
+        removeMouseWheelListener(this.mouse);
+
+        addMouseListener(mouse);
+        addMouseMotionListener(mouse);
+        addMouseWheelListener(mouse);
+
+        this.mouse = mouse;
+    }
+
+    public GameModule addMod(GameModule module){
+        try{
+            modules.addMod(module);
+            log(LOG, ":: Adding Module: " + module.getKey());
+            return module;
+        } catch (DuplicateModuleException e){
+            e.printStackTrace();
+            return modules.get(module.getKey());
+        }
+    }
+
+    protected void processModuleInput(double delta){
+        keyboard.poll();
+        mouse.poll();
+        for(GameModule module: modules.values()){
+            if(module.isInitialized()) module.input(delta);
+        }
+    }
+    protected void processModuleUpdates(double delta){
+        for(GameModule module: modules.values()){
+            if(module.isInitialized()) module.update(delta);
+        }
+    }
+    protected void processModuleGraphics(Graphics g){
+        for(GameModule module: modules.values()){
+            if(module.isInitialized()) module.render(g);
+            reset(g);
+        }
+    }
+
+    protected void draw(){
+        if(window.isVisible() && !isResizing()){
+            do{
+                do{
+                    Graphics g = null;
+                    try {
+                        g = getBufferStrategy().getDrawGraphics();
+                        g.clearRect(0, 0, getWidth(), getHeight());
+                        screen.resetViewport();
+                        processModuleGraphics(g);
+                        render(g);
+                    } catch (IllegalStateException e){
+                        createBufferStrategy(2);
+                    } finally {
+                        if (g != null) g.dispose();
+                    }
+                } while (getBufferStrategy().contentsRestored());
+                getBufferStrategy().show();
+            } while (getBufferStrategy().contentsLost());
+        }
+    }
+
+    protected abstract void input(double delta);
+    protected abstract void update(double delta);
+    protected abstract void render(Graphics g);
+
+    protected void reset(Graphics g){
+        g.translate(0, 0);
+        g.setFont(new Font("New Courier", Font.PLAIN, 12));
+        g.setColor(Color.white);
+        ((Graphics2D)g).setStroke(new BasicStroke(1));
+    }
+    public void sleep(long duration){
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void onShutDown(){
+        try {
+            running = false;
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
     }
 }

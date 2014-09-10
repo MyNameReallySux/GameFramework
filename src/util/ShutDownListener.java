@@ -1,6 +1,6 @@
 package util;
 
-import game.GameFramework;
+import game.Game;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -9,14 +9,14 @@ import java.awt.event.KeyEvent;
  * Created by Shorty on 8/10/2014.
  */
 public class ShutDownListener extends KeyAdapter {
-    GameFramework game;
+    Game game;
     int shutdownKey;
 
-    public ShutDownListener(GameFramework game){
+    public ShutDownListener(Game game){
         this(game, KeyEvent.VK_ESCAPE);
     }
 
-    public ShutDownListener(GameFramework game, int shutdownKey){
+    public ShutDownListener(Game game, int shutdownKey){
         this.shutdownKey = shutdownKey;
         this.game = game;
     }
@@ -29,8 +29,8 @@ public class ShutDownListener extends KeyAdapter {
     public void keyPressed(KeyEvent e){
         super.keyPressed(e);
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE && game.isRunning()){
-            if(game.getDisplay().isFullScreen())
-                game.getDisplay().exitFullScreen();
+            if(Game.display().isFullScreen())
+                Game.display().exitFullScreen();
             game.onShutDown();
         }
     }

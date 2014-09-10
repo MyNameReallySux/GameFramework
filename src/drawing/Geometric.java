@@ -1,6 +1,6 @@
 package drawing;
 
-import game.GameFramework;
+import game.Game;
 import util.Log;
 import util.physics.Matrix3x3f;
 import util.physics.Vector2f;
@@ -14,44 +14,34 @@ import java.awt.*;
  */
 
 public abstract class Geometric implements Log {
-    protected Vector2f base[], world[];
-    protected Vector2f position;
-    protected Vector2f velocity;
-    protected float rotation, rotationDelta;
+    public Vector2f base[], world[];
+    public Vector2f position;
+    public Vector2f velocity;
+    public float rotation, rotationDelta;
     protected boolean movable, gravity, rotating;
 
     public Vector2f getPosition(){
         return position;
     }
-    public float getPositionX() {
-        return position.x;
-    }
-    public float getPositionY(){
-        return position.y;
+
+    public void setPosition(Vector2f position) {
+        this.position = position;
     }
 
     public void setPosition(float x, float y) {
         this.position = new Vector2f(x, y);
     }
-    public void setPosition(Vector2f position) {
-        this.position = position;
-    }
 
     public Vector2f getVelocity(){
         return velocity;
     }
-    public float getVelocityX(){
-        return velocity.x;
-    }
-    public float getVelocityY(){
-        return velocity.y;
+
+    public void setVelocity(Vector2f velocity) {
+        this.velocity = velocity;
     }
 
     public void setVelocity(float x, float y){
         this.velocity = new Vector2f(x, y);
-    }
-    public void setVelocity(Vector2f velocity) {
-        this.velocity = velocity;
     }
 
     public Vector2f[] getBasePolygon(){
@@ -71,13 +61,15 @@ public abstract class Geometric implements Log {
     public float getRotation(){
         return rotation;
     }
-    public float getRotationRate(){
-        return rotationDelta;
-    }
 
     public void setRotation(float rotation){
         this.rotation = rotation;
     }
+
+    public float getRotationRate(){
+        return rotationDelta;
+    }
+
     public void setRotationRate(float rotationDelta){
         this.rotationDelta = rotationDelta;
     }
@@ -118,7 +110,7 @@ public abstract class Geometric implements Log {
 
         for(int i = 0; i < base.length; i++){
             world[i] = base[i].mul(matrix);
-            world[i] = world[i].mul(GameFramework.Viewport());
+            world[i] = world[i].mul(Game.viewport());
         }
     }
 }

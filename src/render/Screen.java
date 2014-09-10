@@ -1,6 +1,6 @@
 package render;
 
-import game.GameFramework;
+import game.Game;
 import util.physics.Matrix3x3f;
 
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.awt.geom.Point2D;
  */
 
 public class Screen {
-    public GameFramework game;
+    public Game game;
 
     public float worldWidth, worldHeight;
     public float screenWidth, screenHeight;
@@ -21,7 +21,7 @@ public class Screen {
     Point2D.Float center;
     Matrix3x3f viewport;
 
-    public Screen(GameFramework game, float worldWidth, float worldHeight){
+    public Screen(Game game, float worldWidth, float worldHeight){
         this.game = game;
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -34,10 +34,10 @@ public class Screen {
     }
 
     public void resetViewport(){
-        this.screenWidth = game.getWidth() - 1;
-        this.screenHeight = game.getHeight() - 1;
-        this.scaleX = screenWidth / worldWidth;
-        this.scaleY = screenHeight / worldHeight;
+        screenWidth = game.getWidth() - 1;
+        screenHeight = game.getHeight() - 1;
+        scaleX = screenWidth / worldWidth;
+        scaleY = screenHeight / worldHeight;
         center = new Point2D.Float(screenWidth / 2 ,screenHeight / 2);
         viewport = Matrix3x3f.scale(scaleX, -scaleY);
         viewport = viewport.mul(Matrix3x3f.translate(center.x, center.y));

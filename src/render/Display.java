@@ -1,6 +1,6 @@
 package render;
 
-import game.GameFramework;
+import game.Game;
 import util.Log;
 
 import javax.swing.*;
@@ -28,12 +28,12 @@ public class Display implements Log {
 
     private static final String LOG = "Display";
 
-    protected GameFramework game;
+    protected Game game;
     protected GraphicsDevice graphicsDevice;
     protected DisplayMode startingDisplayMode, selectedDisplayMode;
     private volatile boolean fullScreen;
 
-    public Display(GameFramework game){
+    public Display(Game game){
         this.game = game;
         initialize();
     }
@@ -94,7 +94,7 @@ public class Display implements Log {
     public void toggleFullScreen(){
         if(isFullScreen()){
             exitFullScreen();
-            game.getWindow().initialize();
+            Game.window().initialize();
         } else {
             enterFullScreen();
         }
@@ -102,8 +102,8 @@ public class Display implements Log {
     public void enterFullScreen(){
         try{
             if(!graphicsDevice.isFullScreenSupported()) throw new FullScreenNotSupportedException();
-            game.getWindow().dispose(true);
-            graphicsDevice.setFullScreenWindow(game.getWindow());
+            Game.window().dispose(true);
+            graphicsDevice.setFullScreenWindow(Game.window());
             try{
                 if(!graphicsDevice.isDisplayChangeSupported()) throw new DisplayChangeNotSupportedException();
                 graphicsDevice.setDisplayMode(selectedDisplayMode);
@@ -125,7 +125,7 @@ public class Display implements Log {
         }
 
         graphicsDevice.setFullScreenWindow(null);
-        game.getWindow().dispose(false);
+        Game.window().dispose(false);
         fullScreen = false;
     }
 
@@ -137,8 +137,8 @@ public class Display implements Log {
             enterFullScreen();
         } else {
             selectedDisplayMode = newResolution;
-            if(game.getWindow() != null){
-                game.getWindow().setWindowSize();
+            if(Game.window() != null){
+                Game.window().setWindowSize();
             } else {
                 log(LOG, "Window is null");
             }

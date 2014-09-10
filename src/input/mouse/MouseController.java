@@ -1,10 +1,12 @@
 package input.mouse;
 
-import game.GameFramework;
+import game.Game;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 
 /**
  * Created by Shorty on 8/8/2014.
@@ -13,22 +15,17 @@ public abstract class MouseController implements MouseListener, MouseMotionListe
     protected final int SINGLE_CLICK_THRESHHOLD = 5;
     protected final int DOUBLE_CLICK_THRESHHOLD = 10;
     protected final int BUTTON_COUNT = 3;
-
+    public int x, y;
     protected Point mousePos, currentPos;
     protected boolean[] buttons;
-
     protected int[] polled;
     protected int[] delay;
-
     protected int notches;
     protected int polledNotches;
-
-    public int x, y;
-
     protected Robot robot;
-    protected GameFramework game;
+    protected Game game;
 
-    public MouseController(GameFramework game){
+    public MouseController(Game game){
         this.game = game;
         initializeRobot();
         mousePos = new Point(0, 0);

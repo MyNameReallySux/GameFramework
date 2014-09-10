@@ -1,6 +1,6 @@
 package render;
 
-import game.GameFramework;
+import game.Game;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,16 +16,13 @@ import java.awt.event.WindowEvent;
  */
 
 public class GameWindow extends JFrame {
-    protected GameFramework game;
-    protected Display display;
+    public ComponentAdapter onResizeListener;
+    protected Game game;
     protected volatile boolean disableCursor;
 
-    public ComponentAdapter onResizeListener;
 
-
-    public GameWindow(GameFramework game){
+    public GameWindow(Game game){
         this.game = game;
-        this.display = game.getDisplay();
         initialize();
         game.createBufferStrategy(2);
         addWindowCloseListener();
@@ -42,7 +39,7 @@ public class GameWindow extends JFrame {
     }
 
     public void setWindowSize(){
-        game.setSize(display.getSize());
+        game.setSize(Game.display().getSize());
         pack();
     }
 
@@ -71,7 +68,7 @@ public class GameWindow extends JFrame {
         onResizeListener = new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                game.getScreen().onResize();
+                Game.screen().onResize();
             }
         };
         addComponentListener(onResizeListener);

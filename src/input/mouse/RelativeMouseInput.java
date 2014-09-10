@@ -1,19 +1,19 @@
 package input.mouse;
 
-import game.GameFramework;
+import game.Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by Shorty on 8/8/2014.
  */
 public class RelativeMouseInput extends AbsoluteMouseInput {
-    protected Point relativePos;
     public int dx, dy;
+    protected Point relativePos;
 
-    public RelativeMouseInput(GameFramework game){
+    public RelativeMouseInput(Game game){
         super(game);
         this.relativePos = new Point(0, 0);
     }
@@ -46,7 +46,7 @@ public class RelativeMouseInput extends AbsoluteMouseInput {
     @Override
     public synchronized void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
-        Point center = game.getWindow().getCenter();
+        Point center = Game.window().getCenter();
         dx += (currentPos.x - center.x);
         dy += (currentPos.y - center.y);
         centerMouse();
@@ -54,7 +54,7 @@ public class RelativeMouseInput extends AbsoluteMouseInput {
 
     public void centerMouse(){
         if(robot != null && game.isShowing()){
-            Point center = game.getWindow().getCenter();
+            Point center = Game.window().getCenter();
             SwingUtilities.convertPointToScreen(center, game);
             robot.mouseMove(center.x, center.y);
         }

@@ -1,6 +1,6 @@
 package input.mouse;
 
-import game.GameFramework;
+import game.Game;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -10,7 +10,7 @@ import java.awt.event.MouseWheelEvent;
  * Created by Shorty on 8/8/2014.
  */
 public class AbsoluteMouseInput extends MouseController {
-    public AbsoluteMouseInput(GameFramework game){
+    public AbsoluteMouseInput(Game game){
         super(game);
     }
 
